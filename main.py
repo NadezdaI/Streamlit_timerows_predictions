@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 
 model = joblib.load("CatBoost_timerows.pkl")
 
-st.title("Прогноз продаж на будущие даты")
+st.title("Прогноз продаж на будущие даты по неделям")
 
 data_train = pd.read_csv("data_train.csv", parse_dates=["Order Date"], index_col="Order Date")
 data_test  = pd.read_csv("data_test.csv", parse_dates=["Order Date"], index_col="Order Date")
@@ -38,33 +38,35 @@ else:
         # Train
         fig.add_trace(go.Scatter(
             x=data_train.index, y=data_train['y'],
-            mode='lines', name='Данные до 2017', line=dict(color='#0099CC')
+            mode='lines+markers', name='Данные до 2017', marker=dict(symbol='circle', size=6, color='#0099CC'), line=dict(color='#0099CC')
         ))
         fig.add_trace(go.Scatter(
             x=data_train.index, y=y_pred_train,
-            mode='lines', name='Прогноз до 2017', line=dict(color='red', dash='dash')
+            mode='lines', name='Прогноз до 2017', line=dict(color='#FF6600', width=0.8)
         ))
 
         # Test
         fig.add_trace(go.Scatter(
             x=data_test.index, y=data_test['y'],
-            mode='lines', name='Данные до 2018', line=dict(color='#339999')
+            mode='lines+markers', name='Данные до 2018', marker=dict(symbol='circle', size=6, color='#339999')
         ))
         fig.add_trace(go.Scatter(
             x=data_test.index, y=y_pred_test,
-            mode='lines', name='Прогноз до 2018', line=dict(color='red', dash='dash')
+            mode='lines', name='Прогноз до 2018', line=dict(color='#FF6600', width=0.8)
         ))
 
         # Future
         fig.add_trace(go.Scatter(
             x=future_df.index, y=future_df["y_pred"],
-            mode='lines', name='Прогноз', line=dict(color='purple', dash='dot')
+            mode='lines+markers',
+            name='Прогноз',
+            marker=dict(symbol='circle', size=6, color='#FF6600'),   
+            line=dict(color='#FF6600', width=0.9)                   
         ))
 
         fig.update_layout(
             title="Прогноз продаж с историческими данными",
-            xaxis_title="Дата",
-            yaxis_title="Продажи",
+            yaxis_title="Продажи, USD",
             hovermode="x unified",
             width=1200,   # увеличиваем ширину
             height=700,   # увеличиваем высоту
